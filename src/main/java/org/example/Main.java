@@ -52,10 +52,8 @@ public class Main {
             long flightTime = calculateFlightTime(ticket).toMinutes();
 
             if (carriers.containsKey(carrier)) {
-                if (carriers.get(carrier) > flightTime)
-                    carriers.put(carrier, flightTime);
-            } else
-                carriers.put(ticket.getCarrier(), flightTime);
+                if (carriers.get(carrier) > flightTime) carriers.put(carrier, flightTime);
+            } else carriers.put(ticket.getCarrier(), flightTime);
         });
 
         return carriers;
@@ -68,27 +66,29 @@ public class Main {
     private static double getMedianPrice(List<Ticket> tickets) {
         double medianPrice;
         int index;
+
         List<Ticket> sortTicketsByPrice = new ArrayList<>(tickets).stream()
                 .sorted(Comparator.comparingInt(Ticket::getPrice))
                 .toList();
 
         if (sortTicketsByPrice.size() % 2 == 0) {
-            index = (sortTicketsByPrice.size()/2 + sortTicketsByPrice.size()/2 -1) / 2;
+            index = (sortTicketsByPrice.size() / 2 + sortTicketsByPrice.size() / 2 - 1) / 2;
+
             double a = sortTicketsByPrice.get(index).getPrice();
-            double b = sortTicketsByPrice.get(index +1).getPrice();
+            double b = sortTicketsByPrice.get(index + 1).getPrice();
+
             medianPrice = (a + b) / 2;
-        }
-        else {
-            index =  sortTicketsByPrice.size() / 2;
+        } else {
+            index = sortTicketsByPrice.size() / 2;
+
             medianPrice = sortTicketsByPrice.get(index).getPrice();
         }
 
         return medianPrice;
     }
 
-    private static List<Ticket> searchSuitableTickets(DataStore dataStore,
-                                                      String departureCity,
-                                                      String arrivalCity) {
+    private static List<Ticket> searchSuitableTickets(DataStore dataStore, String departureCity, String arrivalCity) {
+
         return dataStore.getTickets().stream()
                 .filter(ticket ->
                         ticket.getOriginName().equals(departureCity) && ticket.getDestinationName().equals(arrivalCity))
@@ -106,10 +106,8 @@ public class Main {
         StringBuilder stringBuilder = new StringBuilder();
         for (Map.Entry<String, Long> map : carriers.entrySet()) {
             stringBuilder
-                    .append("Перевозчик %s: %dч %dм".formatted(
-                            map.getKey(),
-                            map.getValue() / 60,
-                            map.getValue() % 60))
+                    .append("Перевозчик %s: %dч %dм"
+                            .formatted(map.getKey(), map.getValue() / 60, map.getValue() % 60))
                     .append("\n");
         }
         return stringBuilder.toString();
