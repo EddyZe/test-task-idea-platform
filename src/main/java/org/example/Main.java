@@ -42,7 +42,7 @@ public class Main {
         double averagePrice = getAveragePrice(suitableTickets);
         double medianPrice = getMedianPrice(suitableTickets);
 
-        System.out.printf("Разница между средней ценой и медианой цены: \n%s%n", averagePrice - medianPrice);
+        System.out.printf("Разница между средней ценой и медианой цены: %s", averagePrice - medianPrice);
     }
 
     private static Map<String, Long> findTheMinimumTimeOfTheCarriers(List<Ticket> tickets) {
