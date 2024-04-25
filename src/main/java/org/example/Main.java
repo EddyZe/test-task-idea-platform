@@ -10,9 +10,7 @@ import org.example.models.Ticket;
 import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Main {
 
@@ -42,9 +40,9 @@ public class Main {
         System.out.println(carriersInfoTravelTime);
 
         double averagePrice = getAveragePrice(suitableTickets);
-        double medianPrice = getAverageMedian(suitableTickets);
+        double medianPrice = getMedianPrice(suitableTickets);
 
-        System.out.printf("Разница между средней ценой и медианой: \n%s%n", averagePrice - medianPrice);
+        System.out.printf("Разница между средней ценой и медианой цены: \n%s%n", averagePrice - medianPrice);
     }
 
     private static Map<String, Long> findTheMinimumTimeOfTheCarriers(List<Ticket> tickets) {
@@ -67,11 +65,25 @@ public class Main {
         return tickets.stream().mapToDouble(Ticket::getPrice).sum() / tickets.size();
     }
 
-    private static double getAverageMedian(List<Ticket> tickets) {
-        return tickets.stream().mapToDouble(Ticket::getPrice)
-                .sorted()
-                .reduce((a, b) -> (a + b) / 2)
-                .orElse(0);
+    private static double getMedianPrice(List<Ticket> tickets) {
+        double medianPrice;
+        int index;
+        List<Ticket> sortTicketsByPrice = new ArrayList<>(tickets).stream()
+                .sorted(Comparator.comparingInt(Ticket::getPrice))
+                .toList();
+
+        if (sortTicketsByPrice.size() % 2 == 0) {
+            index = (sortTicketsByPrice.size()/2 + sortTicketsByPrice.size()/2 -1) / 2;
+            double a = sortTicketsByPrice.get(index).getPrice();
+            double b = sortTicketsByPrice.get(index +1).getPrice();
+            medianPrice = (a + b) / 2;
+        }
+        else {
+            index =  sortTicketsByPrice.size() / 2;
+            medianPrice = sortTicketsByPrice.get(index).getPrice();
+        }
+
+        return medianPrice;
     }
 
     private static List<Ticket> searchSuitableTickets(DataStore dataStore,
@@ -94,8 +106,10 @@ public class Main {
         StringBuilder stringBuilder = new StringBuilder();
         for (Map.Entry<String, Long> map : carriers.entrySet()) {
             stringBuilder
-                    .append("Перевозчик %s: %dч %dм"
-                            .formatted(map.getKey(), map.getValue() / 60, map.getValue() % 60))
+                    .append("Перевозчик %s: %dч %dм".formatted(
+                            map.getKey(),
+                            map.getValue() / 60,
+                            map.getValue() % 60))
                     .append("\n");
         }
         return stringBuilder.toString();
