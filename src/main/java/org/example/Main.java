@@ -28,6 +28,12 @@ public class Main {
         String arrivalCity = "Тель-Авив";
 
         List<Ticket> suitableTickets = searchSuitableTickets(dataStore, departureCity, arrivalCity);
+
+        if (suitableTickets.isEmpty()) {
+            System.out.printf("Рейсы '%s - %s' не найдены%n", departureCity, arrivalCity);
+            return;
+        }
+
         Map<String, Long> carriersAndTheirMinTravelTime = findTheMinimumTimeOfTheCarriers(suitableTickets);
 
         String carriersInfoTravelTime = """
